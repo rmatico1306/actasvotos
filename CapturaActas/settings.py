@@ -25,10 +25,12 @@ SECRET_KEY = 'django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
-DEBUG = False
-
+#DEBUG = False
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($')
 ALLOWED_HOSTS = ['*']
-
+if config('DJANGO_PRODUCTION_ENV', default=False, cast=bool):
+    from .settings_production import *
 
 # Application definition
 
@@ -77,24 +79,24 @@ WSGI_APPLICATION = 'CapturaActas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#       'NAME': 'baseelectoral',
-#        'USER':'root',
-#        'PASSWORD':'',
-#       'HOST':'127.0.0.1',
-#        'DATABASE_PORT':'3306',
-#    }
-#}
+DATABASES = {
+    'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'baseelectoral',
+    'USER':'root',
+    'PASSWORD':'',
+    'HOST':'127.0.0.1',
+    'DATABASE_PORT':'3306',
+    }
+}
 import dj_database_url
 from decouple import config
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
+#DATABASES = {
+#    'default': dj_database_url.config(
+#        default=config('DATABASE_URL')
+#    )
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
