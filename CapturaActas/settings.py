@@ -21,16 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($'
+#SECRET_KEY = 'django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 #DEBUG = False
-DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($')
+#DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
+DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($')
+#SECRET_KEY = config('SECRET_KEY', default='django-insecure-z-h(4eo+qy5e4+$v#-0i@&fo051)c2p%z5pbd-r#myp&!_mx($')
 ALLOWED_HOSTS = ['*']
-if config('DJANGO_PRODUCTION_ENV', default=False, cast=bool):
-    from .settings_production import *
+#if config('DJANGO_PRODUCTION_ENV', default=False, cast=bool):
+#    from .settings_production import *
 
 # Application definition
 
@@ -154,3 +156,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
