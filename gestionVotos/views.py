@@ -7,6 +7,8 @@ from django.conf import settings
 from gestionVotos.forms import FormularioContacto
 
 # Create your views here.
+def home(request):
+    return render(request,"home.html")
 def busquedas_actas(request):
     return render(request,"busquedasActas.html")
 def buscar(resquest):
@@ -21,11 +23,13 @@ def buscar(resquest):
             actas= Acta.objects.filter(tipo_casilla__icontains=acta)
             total_cheloCano= Acta.objects.aggregate(total= Sum('num_votoChelo'))
             total_morena= Acta.objects.aggregate(total= Sum('num_votoMorena')) 
-           
+            total_PRD= Acta.objects.aggregate(total= Sum('num_prd')) 
+            total_PRI= Acta.objects.aggregate(total= Sum('num_pri')) 
+            total_PT= Acta.objects.aggregate(total= Sum('num_pt'))
 
-            
+          
             #es como si usara el  like
-            return render(resquest, "resultados_busquedas.html",{"acta1":total_cheloCano['total'],"query":acta} )
+            return render(resquest, "resultados_busquedas.html",{"acta1":total_cheloCano['total'],"query":acta},{"acta1":total_cheloCano['total'],"query":acta} )
     else:
         mensaje= "no ha introducido nada "
     return HttpResponse(mensaje)
@@ -51,8 +55,11 @@ def contacto(request):
 def resultados_votaciones(request):
     total_cheloCano= Acta.objects.aggregate(total= Sum('num_votoChelo'))
     total_morena= Acta.objects.aggregate(total= Sum('num_votoMorena')) 
-
-    return render(request,"resultadosActas.html",{"resultado_cano":total_cheloCano['total'],"resultado_oscar":total_morena['total']})
+    total_PRD= Acta.objects.aggregate(total= Sum('num_prd')) 
+    total_PRI= Acta.objects.aggregate(total= Sum('num_pri')) 
+    total_PT= Acta.objects.aggregate(total= Sum('num_pt'))
+    total_votos= Acta.objects.aggregate(total= Sum('total_votos'))
+    return render(request,"resultadosActas.html",{"resultado_cano":total_cheloCano['total'],"resultado_oscar":total_morena['total'],"resultado_homero":total_PRD['total'],"resultado_aurora":total_PRI['total'],"resultado_joaquin":total_PT['total'],"total_votos":total_votos['total']})
 
 #def totalvotos(request):
  #   return render()
